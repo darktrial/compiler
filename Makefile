@@ -1,2 +1,2 @@
 All:
-	gcc -o compiler main.c vm.c
+	gcc -o compiler main.c lex.c
