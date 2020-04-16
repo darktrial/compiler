@@ -161,10 +161,6 @@ void factor(void)
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            /*text[pos++] = MV;
-    		text[pos++] = atoi(getLexeme());
-    		text[pos++] = ADD;
-    		text[pos++] = PUSH;*/
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
@@ -175,40 +171,12 @@ void factor(void)
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            /*text[pos++] = MV;
-    		text[pos++] = atoi(getLexeme());
-    		text[pos++] = SUB;
-    		text[pos++] = PUSH;*/
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
             advance();
         }
     }
-     /*else if (match(MULOP)) {
-       // printf("SUB: %s\n", getLexeme());
-        advance();
-        if (match(INT)) {
-            printf("INT: %s\n", getLexeme());
-   
-            advance();
-        } else if (match(ID)) {
-            printf("ID: %s\n", getLexeme());
-            advance();
-        }
-    }
-    else if (match(DIVOP)) {
-        printf("SUB: %s\n", getLexeme());
-        advance();
-        if (match(INT)) {
-            printf("INT: %s\n", getLexeme());
-     
-            advance();
-        } else if (match(ID)) {
-            printf("ID: %s\n", getLexeme());
-            advance();
-        }
-    }*/
      else if (match(ID)) {
         printf("ID: %s\n", getLexeme());
         advance();
