@@ -21,10 +21,10 @@ int execute()
     	op = *pc++; // get next operation code	
     	if (op == MV) {ax = *pc++; printf("move :%ld\n",ax);}  
     	else if (op == PUSH) {*--sp = ax;printf("PUSH :%ld\n",ax);}
-    	else if (op == ADD) {ax = *sp++ + ax;printf("ADD :%ld\n",ax);}
-    	else if (op == MUL) {ax = *sp++ * ax;printf("MUL :%ld\n",ax);}
-    	else if (op == SUB) {ax = *sp++ - ax;printf("SUB :%ld\n",ax);}
-    	else if (op == DIV) {ax = *sp++ / ax;printf("DIV :%ld\n",ax);}
+    	else if (op == ADD) {printf("ADD :%ld\n",ax);ax = *sp++ + ax;}
+    	else if (op == MUL) {printf("MUL :%ld\n",ax);ax = *sp++ * ax;}
+    	else if (op == SUB) {printf("SUB :%ld\n",ax);ax = *sp++ - ax;}
+    	else if (op == DIV) {printf("DIV :%ld\n",ax);ax = *sp++ / ax;}
     	else if (op == EXIT) { printf("exit(%ld)\n", *sp); return *sp;}
     	else  return 0;
     }
@@ -99,19 +99,25 @@ void expr(void)
 void expr_tail(void)
 {
     if (match(ADDOP)){
-        //printf("ADDs: %s\n", getLexeme());
-        //advance();
+        printf("ADDs: %s\n", getLexeme());
+    	text[pos++] = PUSH;
+        advance();
         term();
+        text[pos++] = ADD;
         expr_tail();
+ 
     }
     else if (match(SUBOP)){
-        //printf("SUB: %s\n", getLexeme());
-       // advance();
+        printf("SUB: %s\n", getLexeme());
+        text[pos++] = PUSH;
+        advance();
         term();
+        text[pos++] = ADD;
         expr_tail();
     } 
     else {
         // NIL
+        text[pos++] = PUSH;
         text[pos++] = EXIT;
     }
 }
@@ -124,14 +130,18 @@ void term_tail(void)
 {
     if (match(MULOP)) {
         printf("MUL: %s\n", getLexeme());
-        //advance();
+		text[pos++] = PUSH;
+        advance();
         factor();
+        text[pos++] = MUL;
         term_tail();
     }
     else if (match(DIVOP)) {
         printf("DIV: %s\n", getLexeme());
-        //advance();
+        text[pos++] = PUSH;
+        advance();
         factor();
+        text[pos++] = DIV;
         term_tail();
     }  
     else {
@@ -145,17 +155,16 @@ void factor(void)
         printf("INT: %d\n", atoi(getLexeme()));
         text[pos++] = MV;
         text[pos++] = atoi(getLexeme());
-        text[pos++] = PUSH;
         advance();
     } else if (match(ADDOP)) {
         printf("ADD: %s\n", getLexeme());
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            text[pos++] = MV;
+            /*text[pos++] = MV;
     		text[pos++] = atoi(getLexeme());
     		text[pos++] = ADD;
-    		text[pos++] = PUSH;
+    		text[pos++] = PUSH;*/
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
@@ -166,25 +175,22 @@ void factor(void)
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            text[pos++] = MV;
+            /*text[pos++] = MV;
     		text[pos++] = atoi(getLexeme());
     		text[pos++] = SUB;
-    		text[pos++] = PUSH;
+    		text[pos++] = PUSH;*/
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
             advance();
         }
     }
-     else if (match(MULOP)) {
+     /*else if (match(MULOP)) {
        // printf("SUB: %s\n", getLexeme());
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            text[pos++] = MV;
-    		text[pos++] = atoi(getLexeme());
-    		text[pos++] = MUL;
-    		text[pos++] = PUSH;
+   
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
@@ -196,16 +202,13 @@ void factor(void)
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
-            text[pos++] = MV;
-    		text[pos++] = atoi(getLexeme());
-    		text[pos++] = DIV;
-    		text[pos++] = PUSH;
+     
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
             advance();
         }
-    }
+    }*/
      else if (match(ID)) {
         printf("ID: %s\n", getLexeme());
         advance();
