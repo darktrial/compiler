@@ -19,12 +19,12 @@ int execute()
 	while (1) 
 	{
     	op = *pc++; // get next operation code	
-    	if (op == MV) {ax = *pc++;}  
-    	else if (op == PUSH) {*--sp = ax;}
-    	else if (op == ADD) ax = *sp++ + ax;
-    	else if (op == MUL) ax = *sp++ * ax;
-    	else if (op == SUB) ax = *sp++ - ax;
-    	else if (op == DIV) ax = *sp++ / ax;
+    	if (op == MV) {ax = *pc++; printf("move :%ld\n",ax);}  
+    	else if (op == PUSH) {*--sp = ax;printf("PUSH :%ld\n",ax);}
+    	else if (op == ADD) {ax = *sp++ + ax;printf("ADD :%ld\n",ax);}
+    	else if (op == MUL) {ax = *sp++ * ax;printf("MUL :%ld\n",ax);}
+    	else if (op == SUB) {ax = *sp++ - ax;printf("SUB :%ld\n",ax);}
+    	else if (op == DIV) {ax = *sp++ / ax;printf("DIV :%ld\n",ax);}
     	else if (op == EXIT) { printf("exit(%ld)\n", *sp); return *sp;}
     	else  return 0;
     }
@@ -124,13 +124,13 @@ void term_tail(void)
 {
     if (match(MULOP)) {
         printf("MUL: %s\n", getLexeme());
-        advance();
+        //advance();
         factor();
         term_tail();
     }
     else if (match(DIVOP)) {
         printf("DIV: %s\n", getLexeme());
-        advance();
+        //advance();
         factor();
         term_tail();
     }  
@@ -162,10 +162,44 @@ void factor(void)
             advance();
         }
     } else if (match(SUBOP)) {
+        //printf("SUB: %s\n", getLexeme());
+        advance();
+        if (match(INT)) {
+            printf("INT: %s\n", getLexeme());
+            text[pos++] = MV;
+    		text[pos++] = atoi(getLexeme());
+    		text[pos++] = SUB;
+    		text[pos++] = PUSH;
+            advance();
+        } else if (match(ID)) {
+            printf("ID: %s\n", getLexeme());
+            advance();
+        }
+    }
+     else if (match(MULOP)) {
+       // printf("SUB: %s\n", getLexeme());
+        advance();
+        if (match(INT)) {
+            printf("INT: %s\n", getLexeme());
+            text[pos++] = MV;
+    		text[pos++] = atoi(getLexeme());
+    		text[pos++] = MUL;
+    		text[pos++] = PUSH;
+            advance();
+        } else if (match(ID)) {
+            printf("ID: %s\n", getLexeme());
+            advance();
+        }
+    }
+    else if (match(DIVOP)) {
         printf("SUB: %s\n", getLexeme());
         advance();
         if (match(INT)) {
             printf("INT: %s\n", getLexeme());
+            text[pos++] = MV;
+    		text[pos++] = atoi(getLexeme());
+    		text[pos++] = DIV;
+    		text[pos++] = PUSH;
             advance();
         } else if (match(ID)) {
             printf("ID: %s\n", getLexeme());
@@ -219,7 +253,7 @@ int main(int argc,char *argv[])
 		
 	statement();
 	pc=text;
-	printf("execute\n");
+	printf("###########Assemblly############\n");
 	execute();
     return 0;
 }
