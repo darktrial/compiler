@@ -7,9 +7,8 @@ extern char* getLexeme(void);
 
 #define POOL_SIZE 2048
 enum {MV,PUSH,ADD,SUB,MUL,DIV,EXIT};
-long *pc, *bp, *sp, ax, cycle; // virtual machine registers
-long *text,*old_text,*stack; 
-char *data;   
+long *pc, *sp, ax; // virtual machine registers
+long *text,*old_text,*stack;    
 int pos=0;        
 
 int execute()
@@ -19,7 +18,8 @@ int execute()
 	while (1) 
 	{
     	op = *pc++; // get next operation code	
-    	if (op == MV) {ax = *pc++; printf("move :%ld\n",ax);}  
+    	if (op==END) return 0;
+    	else if (op == MV) {ax = *pc++; printf("move :%ld\n",ax);}  
     	else if (op == PUSH) {*--sp = ax;printf("PUSH :%ld\n",ax);}
     	else if (op == ADD) {printf("ADD :%ld\n",ax);ax = *sp++ + ax;}
     	else if (op == MUL) {printf("MUL :%ld\n",ax);ax = *sp++ * ax;}
@@ -30,45 +30,6 @@ int execute()
     }
 }
 	
-/*int main(int argc,char *argv[])
-{
-
-	int i;
-
-    if (!(text = old_text = malloc(POOL_SIZE))) {
-        printf("could not malloc(%d) for text area\n", POOL_SIZE);
-        return -1;
-    }
-    if (!(data = malloc(POOL_SIZE))) {
-        printf("could not malloc(%d) for data area\n", POOL_SIZE);
-        return -1;
-    }
-    if (!(stack = malloc(POOL_SIZE))) {
-        printf("could not malloc(%d) for stack area\n", POOL_SIZE);
-        return -1;
-    }
-    memset(text, 0, POOL_SIZE);
-    memset(data, 0, POOL_SIZE);
-    memset(stack, 0, POOL_SIZE);
-    
-    bp = sp = (long *)((long)stack + POOL_SIZE);
-	ax = 0;
-	
-	//program
-	i = 0;
-    text[i++] = MV;
-    text[i++] = 20;
-    text[i++] = PUSH;
-    text[i++] = MV;
-    text[i++] = 10;
-    text[i++] = DIV;
-    text[i++] = PUSH;
-    text[i++] = EXIT;
-    pc=text;
-    
-    execute();
-}*/
-
 void statement(void);
 void expr(void);
 void expr_tail(void);
@@ -79,8 +40,8 @@ void factor(void);
 void statement(void)
 {
     if (match(END)) {
-        //advance();
         printf("return\n");
+        text[pos++] = END;
         return;
         // nothing
     } else {
@@ -207,19 +168,14 @@ int main(int argc,char *argv[])
         printf("could not malloc(%d) for text area\n", POOL_SIZE);
         return -1;
     }
-    if (!(data = malloc(POOL_SIZE))) {
-        printf("could not malloc(%d) for data area\n", POOL_SIZE);
-        return -1;
-    }
     if (!(stack = malloc(POOL_SIZE))) {
         printf("could not malloc(%d) for stack area\n", POOL_SIZE);
         return -1;
     }
     memset(text, 0, POOL_SIZE);
-    memset(data, 0, POOL_SIZE);
     memset(stack, 0, POOL_SIZE);
     
-    bp = sp = (long *)((long)stack + POOL_SIZE);
+    sp = (long *)((long)stack + POOL_SIZE);
 	ax = 0;
 		
 	statement();
